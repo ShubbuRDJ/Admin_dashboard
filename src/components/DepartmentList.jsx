@@ -6,15 +6,34 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TableForDepartmentList from "./TableForDepartmentList";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function DepartmentList() {
+  const datas = useSelector((state)=>state.department.department);
   const navigate = useNavigate();
-    const [searchkey,setSearchkey] = useState("");
+    const [filteredData,setFilteredData] = useState([]);
     const [numOfROw, setNumOfRow] = React.useState("10");
     const [numOfPage, setNumOfPage] = React.useState("1");
+    
     const handleNumberOfRow = (event) => {
         setNumOfRow(event.target.value);
     };
+
+    // handle search function 
+    const handleSearch = (event)=>{
+      if(event.target.value !==""){
+      let searchKey = (event.target.value).toLowerCase();
+      // eslint-disable-next-line
+      setFilteredData(datas.filter((data)=>{
+        if((data.department).toLowerCase().includes(searchKey) || (data.address).toLowerCase().includes(searchKey) || (data.postalCode).toLowerCase().includes(!searchKey?event.target.value:searchKey)){
+          return data;
+        }
+      }));
+    }
+    
+    else setFilteredData([]);
+    }
+
   return (
     <div className="viewDetails-container">
       <div className="viewdetails-nav-txt">
@@ -89,7 +108,7 @@ export default function DepartmentList() {
             </div>
 
             <div className="filterInput">
-              <input type="search" name="search" onChange={(e)=>setSearchkey(e.target.value)} id="search" placeholder="&#x1F50D; Search" />
+              <input type="search" name="search" onChange={handleSearch} id="search" placeholder="&#x1F50D; Search" />
             </div>
           </div>
 
@@ -112,7 +131,7 @@ export default function DepartmentList() {
         </div>
         <div className="table-container">
           {/* <CustomTable row={numOfROw} page={numOfPage} /> */}
-          <TableForDepartmentList row={numOfROw} page={numOfPage} searchKey = {searchkey}/>
+          <TableForDepartmentList row={numOfROw} page={numOfPage} filteredData={filteredData}/>
         </div>
       </div>
 

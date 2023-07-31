@@ -15,7 +15,7 @@ export default function Sidebar() {
           <div className="sidebar">
             <div className="sidebar-content">
               <NavLink to='/'>Dashboard</NavLink>
-              <NavLink to='/departmentManagement'>Department Management</NavLink>
+              <NavLink to='/departmentList'>Department Management</NavLink>
               <NavLink to='/manageBot'>Manage Bot</NavLink>
               <NavLink to='/helpQueryManagement'>Help & Queries Management</NavLink>
               <NavLink to='/queryTypeManagement'>Query Type Management</NavLink>

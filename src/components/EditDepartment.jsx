@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import './addNewDepartment.scss'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 // import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { addDepartment } from '../redux/Actions/addDepartmentAction';
+import {editDepartment } from '../redux/Actions/addDepartmentAction';
 
-export default function AddNewDepartment() {
+export default function EditDepartment() {
   const dateObj = new Date();
   let month = "";
   switch(dateObj.getMonth()){
@@ -53,34 +53,33 @@ export default function AddNewDepartment() {
 
   const dispatch =  useDispatch();
   const navigate = useNavigate();
-  const [addDepartmentData,setAddDepartmentData] = useState({createdAt:fullDate})
+  const location = useLocation();
+  const [updateDepartmentData,setUpdateDepartmentData] = useState({...location.state.data,updatedAt:fullDate})
 
   
-  const handleAddDepartment = (event)=>{
+  const handleEditDepartment = (event)=>{
     event.preventDefault();
-    let id = Math.random();
-    // console.log(addDepartmentData);
-    dispatch(addDepartment({...addDepartmentData,id:id}));
+    // console.log(updateDepartmentData);
+    dispatch(editDepartment(updateDepartmentData,updateDepartmentData.id));
     navigate(-1);
-
   }
   return (
     <div className="viewDetails-container">
         <div className="viewdetails-nav-txt">
             <span id='nav1'>Department list</span>
             <span className='nav2'>{'\u3009'}</span>
-            <span className='nav2'>Add new Department</span>
+            <span className='nav2'>edit Details</span>
         </div>
 
         <div className="form-container">
             <div className="department-container">
               <label htmlFor="departName">Department Name</label>
-              <input type="text" name="departName" id="departName" onChange={(e)=>setAddDepartmentData({...addDepartmentData,department:e.target.value})} placeholder='Enter Deoartment name'/>
+              <input value={updateDepartmentData.department} type="text" name="departName" id="departName" onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,department:e.target.value})} placeholder='Enter Deoartment name'/>
             </div>
             <div className="form-input-container">
               <div className="input1">
                 <label htmlFor="store">State</label>
-                <select placeholder='Select store' name="store" id="store" onChange={(e)=>setAddDepartmentData({...addDepartmentData,state:e.target.value})}>
+                <select placeholder='Select store' value={updateDepartmentData.state} name="state" id="state" onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,state:e.target.value})}>
                   <option value="">Select state</option>
                   <option value="Andhra Pradesh">Andhra Pradesh</option>
                   <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -92,7 +91,7 @@ export default function AddNewDepartment() {
                   <option value="Haryana">Haryana</option>
                   <option value="Himachal Pradesh">Himachal Pradesh</option>
                   <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                  <option value="harkhand">Jharkhand</option>
+                  <option value="Jharkhand">Jharkhand</option>
                   <option value="Karnataka">Karnataka</option>
                   <option value="Kerala">Kerala</option>
                   <option value="Madhya Pradesh">Madhya Pradesh</option>
@@ -115,7 +114,7 @@ export default function AddNewDepartment() {
               </div>
               <div className="input1">
               <label htmlFor="city">City</label>
-                <select onChange={(e)=>setAddDepartmentData({...addDepartmentData,city:e.target.value})} placeholder='Select city' name="city" id="city">
+                <select value={updateDepartmentData.city} onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,city:e.target.value})} placeholder='Select city' name="city" id="city">
                   <option value="">Select city</option>
                   <option value="Prayagaraj">Prayagraj</option>
                   <option value="Pratapgarh">Pratapgarh</option>
@@ -125,17 +124,17 @@ export default function AddNewDepartment() {
               </div>
               <div className="input1">
               <label htmlFor="postal">Postal Code</label>
-                <input onChange={(e)=>setAddDepartmentData({...addDepartmentData,postalCode:e.target.value})} type="text" name="postal" id="postal" placeholder='Enter postal code'/>
+                <input value={updateDepartmentData.postalCode} onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,postalCode:e.target.value})} type="text" name="postal" id="postal" placeholder='Enter postal code'/>
               </div>
             </div>
             <div className="form-input-container">
               <div className="input1">
               <label htmlFor="email">Email</label>
-              <input onChange={(e)=>setAddDepartmentData({...addDepartmentData,email:e.target.value})} type="email" name="email" id="email" placeholder='Enter email' />
+              <input value={updateDepartmentData.email} onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,email:e.target.value})} type="email" name="email" id="email" placeholder='Enter email' />
               </div>
               <div className="input1">
               <label htmlFor="password">Password</label>
-              <input onChange={(e)=>setAddDepartmentData({...addDepartmentData,password:e.target.value})} type="password" name="password" id="password" placeholder='*******'/>
+              <input value={updateDepartmentData.password} onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,password:e.target.value})} type="password" name="password" id="password" placeholder='*******'/>
               </div>
               <div className="input1">
               {/* <label htmlFor="password">Password</label>
@@ -144,16 +143,17 @@ export default function AddNewDepartment() {
             </div>
             <div className="form-textArea-container">
               <label htmlFor="address">Complete Address</label>
-              <textarea  onChange={(e)=>setAddDepartmentData({...addDepartmentData,address:e.target.value})} placeholder='Enter address' name="address" id="address" cols="30" rows="7"></textarea>
+              <textarea value={updateDepartmentData.address}  onChange={(e)=>setUpdateDepartmentData({...updateDepartmentData,address:e.target.value})} placeholder='Enter address' name="address" id="address" cols="30" rows="7"></textarea>
             </div>
         </div>
         <div className="btn-container">
             <button onClick={()=>navigate('/departmentList')} className='btn1'>Cancel</button>
           
-            <button className='btn2' onClick={handleAddDepartment}>Add Department</button>
+            <button className='btn2' onClick={handleEditDepartment}>Save Changes</button>
           
         </div>
         
     </div>
   )
 }
+

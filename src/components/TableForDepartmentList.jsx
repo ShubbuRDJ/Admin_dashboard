@@ -1,8 +1,11 @@
 import { styled } from '@mui/material/styles';
 import {Table,Paper,TableRow,TableHead,TableContainer ,TableCell,tableCellClasses,TableBody }from '@mui/material';
 import { BorderColor, ToggleOn, Visibility } from '@mui/icons-material';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { deleteDepartment } from '../redux/Actions/addDepartmentAction';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,19 +32,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function TableForDepartmentList({row,page,searchKey}) {
+export default function TableForDepartmentList({row,page,filteredData}) {
+  const allData = useSelector((state)=>state.department.department);
+  const navigate = useNavigate();
+  const dispatch =  useDispatch();
 
-  const [datas,setDatas] = useState([]);
-  useEffect(()=>{
-    const getData = async ()=>{
-      const url = searchKey?`https://dummyjson.com/users/search?q=${searchKey}`:`https://dummyjson.com/users?limit=${row}&skip=${row*(page-1)}`;
-      const res = await axios.get(url);
-      // console.log(res.data.users);
-      setDatas(res.data.users)
-    }
-    getData();
-  },[setDatas,row,page,searchKey])
-  // console.log(datas)
+  const handleDeleteDepartment = (id)=>{
+    const conf = window.confirm('Are you sure want to delete this entry');
+    if(conf)dispatch(deleteDepartment(id))
+  }
+  console.log(filteredData.length,"filter hu")
   return (
     // style={{height:"90%"}}
     <TableContainer component={Paper} >
@@ -57,18 +57,31 @@ export default function TableForDepartmentList({row,page,searchKey}) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {datas.map((data,index) => (
+          {(filteredData.length !== 0)?filteredData.map((data,index) => (
             <StyledTableRow key={index} sx={{height:-1}}>
               <StyledTableCell component="th" scope="row">
-                {data.id}
+                {index+1}
               </StyledTableCell>
-              <StyledTableCell style={{color:'#015BC4',textDecoration:'underline'}} >{data.firstName}</StyledTableCell>
-              <StyledTableCell >{data.lastName}</StyledTableCell>
-              <StyledTableCell >{((data.age).toString())[0]}</StyledTableCell>
-              <StyledTableCell >{data.birthDate}</StyledTableCell>
-              <StyledTableCell >{<BorderColor/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<Visibility/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<ToggleOn sx={{color:"rgba(112, 182, 115, 1)"}}/>}</StyledTableCell>
+              <StyledTableCell style={{color:'#015BC4',textDecoration:'underline'}} >{data.department}</StyledTableCell>
+              <StyledTableCell >{data.address}</StyledTableCell>
+              <StyledTableCell >1</StyledTableCell>
+              <StyledTableCell >{data.createdAt}</StyledTableCell>
+              <StyledTableCell >{<BorderColor style={{cursor:"pointer"}} onClick={()=>navigate('/editDepartment',{state:{data}})}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<Visibility style={{cursor:"pointer"}} onClick={()=>handleDeleteDepartment(data.id)}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<ToggleOn style={{cursor:"pointer"}} sx={{color:"rgba(112, 182, 115, 1)"}}/>}</StyledTableCell>
             </StyledTableRow>
-          ))}
+          )):
+          allData.map((data,index) => (
+            <StyledTableRow key={index} sx={{height:-1}}>
+              <StyledTableCell component="th" scope="row">
+                {index+1}
+              </StyledTableCell>
+              <StyledTableCell style={{color:'#015BC4',textDecoration:'underline'}} >{data.department}</StyledTableCell>
+              <StyledTableCell >{data.address}</StyledTableCell>
+              <StyledTableCell >1</StyledTableCell>
+              <StyledTableCell >{data.createdAt}</StyledTableCell>
+              <StyledTableCell >{<BorderColor style={{cursor:"pointer"}} onClick={()=>navigate('/editDepartment',{state:{data}})}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<Visibility style={{cursor:"pointer"}} onClick={()=>handleDeleteDepartment(data.id)}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<ToggleOn style={{cursor:"pointer"}} sx={{color:"rgba(112, 182, 115, 1)"}}/>}</StyledTableCell>
+            </StyledTableRow>
+          ))
+          }
         </TableBody>
       </Table>
     </TableContainer>

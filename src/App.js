@@ -4,7 +4,6 @@ import Topbar from "./components/Topbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Content from "./components/Content";
-import { CakeContainer } from "./cakeContainer";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
