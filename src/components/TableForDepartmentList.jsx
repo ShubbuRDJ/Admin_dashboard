@@ -1,8 +1,6 @@
 import { styled } from '@mui/material/styles';
 import {Table,Paper,TableRow,TableHead,TableContainer ,TableCell,tableCellClasses,TableBody }from '@mui/material';
 import { BorderColor, ToggleOn, Visibility } from '@mui/icons-material';
-// import axios from 'axios';
-// import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteDepartment } from '../redux/Actions/addDepartmentAction';
@@ -32,8 +30,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function TableForDepartmentList({row,page,filteredData}) {
-  const allData = useSelector((state)=>state.department.department);
+export default function TableForDepartmentList({searchKey}){
+  let allData = useSelector((state)=>state.department.department);
   const navigate = useNavigate();
   const dispatch =  useDispatch();
 
@@ -41,7 +39,16 @@ export default function TableForDepartmentList({row,page,filteredData}) {
     const conf = window.confirm('Are you sure want to delete this entry');
     if(conf)dispatch(deleteDepartment(id))
   }
-  console.log(filteredData.length,"filter hu")
+
+  // filter data array if searchKey present 
+  if(searchKey){
+    // eslint-disable-next-line
+    allData = allData.filter((item)=>{
+      if(item.department.toLowerCase().includes(searchKey.toLowerCase()) || item.address.toLowerCase().includes(searchKey.toLowerCase()) || item.postalCode.toLowerCase().includes(searchKey.toLowerCase()) || item.state.toLowerCase().includes(searchKey.toLowerCase()) || item.email.toLowerCase().includes(searchKey.toLowerCase())){
+        return item;
+      }
+    })
+  }
   return (
     // style={{height:"90%"}}
     <TableContainer component={Paper} >
@@ -57,19 +64,7 @@ export default function TableForDepartmentList({row,page,filteredData}) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {(filteredData.length !== 0)?filteredData.map((data,index) => (
-            <StyledTableRow key={index} sx={{height:-1}}>
-              <StyledTableCell component="th" scope="row">
-                {index+1}
-              </StyledTableCell>
-              <StyledTableCell style={{color:'#015BC4',textDecoration:'underline'}} >{data.department}</StyledTableCell>
-              <StyledTableCell >{data.address}</StyledTableCell>
-              <StyledTableCell >1</StyledTableCell>
-              <StyledTableCell >{data.createdAt}</StyledTableCell>
-              <StyledTableCell >{<BorderColor style={{cursor:"pointer"}} onClick={()=>navigate('/editDepartment',{state:{data}})}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<Visibility style={{cursor:"pointer"}} onClick={()=>handleDeleteDepartment(data.id)}/>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<ToggleOn style={{cursor:"pointer"}} sx={{color:"rgba(112, 182, 115, 1)"}}/>}</StyledTableCell>
-            </StyledTableRow>
-          )):
-          allData.map((data,index) => (
+          {allData?.map((data,index) => (
             <StyledTableRow key={index} sx={{height:-1}}>
               <StyledTableCell component="th" scope="row">
                 {index+1}

@@ -6,12 +6,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TableForDepartmentList from "./TableForDepartmentList";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 export default function DepartmentList() {
-  const datas = useSelector((state)=>state.department.department);
   const navigate = useNavigate();
-    const [filteredData,setFilteredData] = useState([]);
+    const [searchKey,setSearchKey] = useState("");
     const [numOfROw, setNumOfRow] = React.useState("10");
     const [numOfPage, setNumOfPage] = React.useState("1");
     
@@ -21,17 +19,7 @@ export default function DepartmentList() {
 
     // handle search function 
     const handleSearch = (event)=>{
-      if(event.target.value !==""){
-      let searchKey = (event.target.value).toLowerCase();
-      // eslint-disable-next-line
-      setFilteredData(datas.filter((data)=>{
-        if((data.department).toLowerCase().includes(searchKey) || (data.address).toLowerCase().includes(searchKey) || (data.postalCode).toLowerCase().includes(!searchKey?event.target.value:searchKey)){
-          return data;
-        }
-      }));
-    }
-    
-    else setFilteredData([]);
+      setSearchKey(event.target.value)
     }
 
   return (
@@ -131,7 +119,7 @@ export default function DepartmentList() {
         </div>
         <div className="table-container">
           {/* <CustomTable row={numOfROw} page={numOfPage} /> */}
-          <TableForDepartmentList row={numOfROw} page={numOfPage} filteredData={filteredData}/>
+          <TableForDepartmentList row={numOfROw} page={numOfPage} searchKey={searchKey}/>
         </div>
       </div>
 
